@@ -10,10 +10,10 @@ public class BouncingObject {
     public String objectName = "Object";
     public boolean isBouncing = false;
     
-    double y = 0;
+    public double y = 0;
     double initVelocity = 120;
     double velocity;
-    double time = 0.000000001;
+    double time = 0.1;
     
     public String getName(){
         return objectName;
@@ -25,16 +25,20 @@ public class BouncingObject {
     }
 
     public void bounce(){
-        y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2);
-        time += 0.1;
-        velocity = initVelocity-Environment.g*time;
-        
-        if(velocity == 0)
-                initVelocity = Environment.g*time;
-        
-        if(y <= 0){
-            y = 0;
-            time = 0.000000001;
+        if(isBouncing){
+            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2);
+            time += 0.1;
+            velocity = initVelocity-Environment.g*time;
+
+            if(velocity == 0)
+                    initVelocity = Environment.g*time;
+
+            if(y <= 0){
+                y = 0;
+                time = 0.1;
+                velocity = 0;
+                isBouncing = false;
+            }
         }
     }
     

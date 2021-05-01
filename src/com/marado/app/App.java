@@ -58,7 +58,8 @@ public class App extends Canvas implements Runnable, KeyListener{
     }
     
     static void act(){
-        
+        System.out.println(obj.getValues());
+        obj.bounce();
     }
     
     static void render(){
@@ -110,9 +111,10 @@ public class App extends Canvas implements Runnable, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
+        long timer = System.currentTimeMillis();
         if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            obj.bounce();
-            System.out.println(obj.getValues());
+            if(!obj.isBouncing)
+                obj.isBouncing = true;
         }
     }
 
