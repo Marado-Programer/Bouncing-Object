@@ -22,7 +22,7 @@ public class BouncingObject {
     
     public void bounce(){ //Bounce Action
         if(isBouncing){ //If you clicked <SPACE> now the object it's bouncing
-            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2); //Calculate the windowHeight
+            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2); //Calculate the object height
             time += (double) 1/App.UPS; //1s/UPS
             if(time < initVelocity/Environment.g) //If the moviment it's ascendent
                 velocity = initVelocity-Environment.g*time; //Calculate velocity
