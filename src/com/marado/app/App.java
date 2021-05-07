@@ -2,9 +2,15 @@ package com.marado.app;
 
 import com.marado.entities.BouncingObject;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class App extends Canvas implements Runnable, KeyListener{ //Canvas create a blank retangular that comunicates with the user and will have the proprieties of the window. Runnable to be executed by a Thread. KeyListener to read the keys
@@ -17,14 +23,18 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     public static int UPS = 144, FPS = 60; //Number of UPS and FPS that you want
     
     static JFrame window; //Create a window using JFrame
-    int width = 144; //Dimensions and scale of the window:
-    int height = 256;
-    int scale = 3;
+    public static int windowWidth = 144; //Dimensions and windowScale of the window:
+    public static int windowHeight = 256;
+    public static int windowScale = 2;
+    
+    private BufferedImage image;
+    private Graphics g;
     
     public App(){ //Constructor method. It's for inititiate variables. idk how it works well
         addKeyListener(this);  //Say to the key listener to receive key events from this component
-        setPreferredSize(new Dimension(width*scale,height*scale)); //Tell what dimension you want for the window
+        setPreferredSize(new Dimension(windowWidth*windowScale,windowHeight*windowScale)); //Tell what dimension you want for the window
         initWindow(); //See function
+        image = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_RGB);
     }
     
     public static void main(String[] args) { //Just what's on the main method run!
@@ -32,7 +42,7 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
         app.startApp(); //Start app
     }
     
-    public void initWindow(){
+    private void initWindow(){
         window = new JFrame("Bouncing Object by Marado"); //New window with that name
         window.add(this); //Add the proprieties of Canvas. Why "this"? --> idk
         window.setResizable(false); //Can't change dimensions
@@ -49,21 +59,40 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     }
     
     public synchronized void stopApp(){
+        isRunning = false;
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void readInput(){
         
     }
     
-    static void readInput(){
-        
-    }
-    
-    static void act(){ //Will do all the actions
+    void act(){ //Will do all the actions
         if(obj.isBouncing) //If you clicked <SPACE> now the object it's bouncing
             System.out.println(obj.getValues()); //Show the values. See the function
         obj.bounce(); //Object bounce. See the function
     }
     
-    static void render(){
-        
+    public void render(){
+        BufferStrategy bs = this.getBufferStrategy();
+        if(bs == null){
+            this.createBufferStrategy(3);
+            return;
+        }
+        g = image.getGraphics();
+        g.setColor(new Color(64, 64, 64));
+        g.fillRect(0, 0, windowWidth*windowScale, windowHeight*windowScale);
+        obj.render(g);
+
+        g.dispose();
+        g = bs.getDrawGraphics();
+        g.drawImage(image, 0, 0, windowWidth*windowScale, windowHeight*windowScale, null);
+
+        bs.show();
     }
 
     @Override
@@ -97,6 +126,7 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
                 timer += 1000; //because passed 1 second. If you don't do this timer will be forever 0 and it will show the UPS/FPS without passing 1s. Remove the line to see
             }
         }
+        stopApp();
     }
 
     @Override
