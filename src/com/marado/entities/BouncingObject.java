@@ -17,7 +17,7 @@ public class BouncingObject {
     double time = 0.001; //Time in the air
     
     public void render(Graphics graphics){
-        graphics.setColor(new Color(0, 255, 0));
+        graphics.setColor(new Color(0, 0, 0));
         graphics.fillOval(App.windowWidth/2-objWidth/2, App.windowHeight-(int)y-objHeight, objWidth, objHeight);
     }
 
