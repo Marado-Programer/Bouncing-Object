@@ -2,47 +2,61 @@ package com.marado.entities;
 
 import com.marado.app.App;
 import com.marado.app.Environment;
+import com.marado.graphicInterface.UI;
 import java.awt.Color;
 import java.awt.Graphics;
 
 public class BouncingObject {
     
-    public boolean isBouncing = false; //When the object is bouncing it's true
+    public boolean isBouncing = false; // When the object is bouncing it's true
     
-    public double y = 0; //The windowHeight of the object
-    public int objWidth = 16;
-    public int objHeight = 16;
-    double initVelocity = 35; //The initial velocity that the object
-    double velocity; //The velocity on the air
-    double time = 0.001; //Time in the air
+    public double y = 0; // The windowHeight of the object
+    public int objWidth = 32;
+    public int objHeight = 32;
+    double initVelocity = 54; // The initial velocity that the object
+    double velocity = initVelocity; // The velocity on the air
+    double time = 0; // Time in the air
+    
+    public void act(){
+        bounce(); //Object bounce. See the function
+    }
     
     public void render(Graphics graphics){
-        graphics.setColor(new Color(0, 0, 0));
-        graphics.fillOval(App.windowWidth/2-objWidth/2, App.windowHeight-(int)y-objHeight, objWidth, objHeight);
+        graphics.setColor(new Color(192, 192, 192));
+        graphics.fillOval(App.windowWidth/2-objWidth/2, App.windowHeight-(int)y - objHeight - UI.codeBarHeight, objWidth, objHeight);
     }
 
     public void bounce(){ //Bounce Action
-        if(isBouncing){ //If you clicked <SPACE> now the object it's bouncing
-            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2); //Calculate the object height
-            time += (double) 1/App.UPS; //1s/UPS
-            if(time < initVelocity/Environment.g) //If the moviment it's ascendent
-                velocity = initVelocity-Environment.g*time; //Calculate velocity
-            else //If the moviment it's descendent
-                velocity = initVelocity+Environment.g*time; //Calculate velocity
+        if(isBouncing){ // If you clicked <SPACE> now the object it's bouncing
+            boolean finishedBounce = time >= initVelocity/Environment.g; // If the object has reached the max height so he completed the bounce and now it's falling
+            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2); // Calculate the object height
+            time += (double) 1/App.UPS; // 1s/UPS
+            velocity = initVelocity-Environment.g*time; // Calculate velocity
+            if(velocity == 0) // I think it's unnecessary but...
+                    initVelocity = Environment.g*time; // Calculate the initial velocity
 
-            if(velocity == 0) //I think it's unnecessary but...
-                    initVelocity = Environment.g*time; //Calculate the initial velocity
-
-            if(y <= 0){ //When the object touch the ground
-                y = 0; //Height is 0
-                time = 0.001; //Reset time
-                velocity = 0; //Velocity is 0
-                isBouncing = false; //Isn't bouncing now
+            if(y <= 0 && finishedBounce){ // When the object touch the ground and has already bounced
+            y = 0; // Height is 0
+            time = 0; // Reset time
+            velocity = initVelocity; // Velocity is 0
+            isBouncing = false; // Isn't bouncing now
             }
         }
     }
     
-    public String getValues(){
-        return (String.format("Height: %.3fm\tInitial Velocity: %.3fm/s\tTime: %.3fs\tVelocity: %.3fm/s\n", y, initVelocity, time, velocity)); //Show the values
+    public String getInitVelocity(){
+        return (String.format("Initial Velocity: %.3fm/s", initVelocity));
+    }
+    
+    public String getHeight(){
+        return (String.format("Height: %.3fm", y));
+    }
+    
+    public String getTime(){
+        return (String.format("Time: %.3fs", time));
+    }
+    
+    public String getVelocity(){
+        return (String.format("Velocity: %.3fm/s", velocity));
     }
 }
