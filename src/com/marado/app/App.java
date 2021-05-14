@@ -76,8 +76,7 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     }
     
     void readInput(){
-        if(command.equals(".ping"))
-            System.out.println("pong");
+        userInterface.readInput();
     }
     
     void act(){ //Will do all the actions
@@ -147,16 +146,13 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_PERIOD){
+        if(e.getKeyCode() == KeyEvent.VK_PERIOD)
             receivingCommand = true;
-            command += "";
-        }
         if(receivingCommand){
-            command += e.getKeyChar();
-            System.out.println(command);
+            userInterface.command += e.getKeyChar();
+            System.out.println(userInterface.command);
             if(e.getKeyCode() == KeyEvent.VK_ENTER){
                 receivingCommand = false;
-                command = "";
             }
         }else{
             if(e.getKeyCode() == KeyEvent.VK_SPACE) { //If the key it's <SPACE>
