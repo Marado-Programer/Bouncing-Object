@@ -25,8 +25,10 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     private Thread thread; //Create thread idk how to explain
     
     public static int UPS = 300, FPS = 60; //Number of UPS and FPS that you want
-    
     public static int ups = 0, fps = 0;
+    
+    boolean receivingCommand = false;
+    String command = "";
     
     static JFrame window; //Create a window using JFrame
     public static int windowWidth = 480; //Dimensions and Scale of the window:
@@ -74,7 +76,8 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     }
     
     void readInput(){
-        
+        if(command.equals(".ping"))
+            System.out.println("pong");
     }
     
     void act(){ //Will do all the actions
@@ -144,12 +147,25 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) { //If the key it's <SPACE>
-            if(!obj.isBouncing) //If the object isn't bouncing yet
-                obj.isBouncing = true; //Now it is
+        if(e.getKeyCode() == KeyEvent.VK_PERIOD){
+            receivingCommand = true;
+            command += "";
         }
-        if(e.getKeyCode() == KeyEvent.VK_F) { //If the key it's <SPACE>
-            data.toogleUnFPS();
+        if(receivingCommand){
+            command += e.getKeyChar();
+            System.out.println(command);
+            if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                receivingCommand = false;
+                command = "";
+            }
+        }else{
+            if(e.getKeyCode() == KeyEvent.VK_SPACE) { //If the key it's <SPACE>
+                if(!obj.isBouncing) //If the object isn't bouncing yet
+                    obj.isBouncing = true; //Now it is
+            }
+            if(e.getKeyCode() == KeyEvent.VK_F) { //If the key it's <SPACE>
+                data.toogleUnFPS();
+            }
         }
     }
 
