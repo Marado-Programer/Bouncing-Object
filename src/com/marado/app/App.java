@@ -21,8 +21,8 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
     static UI userInterface = new UI();
     static Data data = new Data();
     
-    static boolean isRunning; //It's the program running?
-    private Thread thread; //Create thread idk how to explain
+    public static boolean isRunning; //It's the program running?
+    private static Thread thread; //Create thread idk how to explain
     
     public static int UPS = 300, FPS = 60; //Number of UPS and FPS that you want
     public static int ups = 0, fps = 0;
@@ -66,7 +66,7 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
         thread.start(); //Thread begin execution
     }
     
-    public synchronized void stopApp(){
+    public static synchronized void stopApp(){
         isRunning = false;
         try {
             thread.join();
@@ -96,7 +96,6 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
         data.render(g);
         obj.render(g);
         
-
         g.dispose();
         g = bs.getDrawGraphics();
         g.drawImage(image, 0, 0, windowWidth*windowScale, windowHeight*windowScale, null);
@@ -106,6 +105,7 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
 
     @Override
     public void run(){
+        requestFocus();
         long initialTime = System.nanoTime(); // Catch the current time of the System in nanoseconds. It will be the time that you called the function
         final double UPS_AMOUNT = 1000000000 / UPS; //How much UPS(Updates Per Second) but /1*10^9 to be in nanoseconds
         final double FPS_AMOUNT = 1000000000 / FPS; //Same thing to UPS but now for FPS(Frames Per Second)
@@ -149,11 +149,17 @@ public class App extends Canvas implements Runnable, KeyListener{ //Canvas creat
         if(e.getKeyCode() == KeyEvent.VK_PERIOD)
             receivingCommand = true;
         if(receivingCommand){
-            userInterface.command += e.getKeyChar();
-            System.out.println(userInterface.command);
             if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                userInterface.hasCode = true;
+                userInterface.code = userInterface.input;
                 receivingCommand = false;
             }
+            if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)
+                userInterface.input = userInterface.input.substring(0, userInterface.input.length() - 1);
+            else if(e.getKeyCode() == KeyEvent.VK_TAB){
+                userInterface.showCompleteCode = true;
+            }else
+                userInterface.input += e.getKeyChar();
         }else{
             if(e.getKeyCode() == KeyEvent.VK_SPACE) { //If the key it's <SPACE>
                 if(!obj.isBouncing) //If the object isn't bouncing yet

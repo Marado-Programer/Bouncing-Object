@@ -5,16 +5,17 @@ import com.marado.app.Environment;
 import com.marado.graphicInterface.UI;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Scanner;
 
 public class BouncingObject {
     
     public boolean isBouncing = false; // When the object is bouncing it's true
     
     public double y = 0; // The windowHeight of the object
-    public int objWidth = 32;
-    public int objHeight = 32;
-    double initVelocity = 54; // The initial velocity that the object
-    double velocity = initVelocity; // The velocity on the air
+    public int objWidth = 64;
+    public int objHeight = 64;
+    public double initVelocity = 15; // The initial velocity that the object
+    double velocity = 0; // The velocity on the air
     double time = 0; // Time in the air
     
     public void act(){
@@ -28,13 +29,12 @@ public class BouncingObject {
 
     public void bounce(){ //Bounce Action
         if(isBouncing){ // If you clicked <SPACE> now the object it's bouncing
-            boolean finishedBounce = time >= initVelocity/Environment.g; // If the object has reached the max height so he completed the bounce and now it's falling
-            y = initVelocity*time-0.5*Environment.g*Math.pow(time, 2); // Calculate the object height
+            boolean finishedBounce = time >= initVelocity/Environment.gravity; // If the object has reached the max height so he completed the bounce and now it's falling
+            y = initVelocity*time-0.5*Environment.gravity*Math.pow(time, 2); // Calculate the object height
             time += (double) 1/App.UPS; // 1s/UPS
-            velocity = initVelocity-Environment.g*time; // Calculate velocity
+            velocity = Math.abs(initVelocity-Environment.gravity*time); // Calculate velocity
             if(velocity == 0) // I think it's unnecessary but...
-                    initVelocity = Environment.g*time; // Calculate the initial velocity
-
+                    initVelocity = Environment.gravity*time; // Calculate the initial velocity
             if(y <= 0 && finishedBounce){ // When the object touch the ground and has already bounced
             y = 0; // Height is 0
             time = 0; // Reset time
